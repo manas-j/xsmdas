@@ -1,0 +1,132 @@
+#!/bin/bash  
+
+
+checkStatus()
+{
+	status=$1
+	msg=$2
+	if [ $status -ne 0 ]
+	then
+        echo -e "\033[1;31m $msg \033[0m"        
+        exit $status
+	fi
+}
+
+CURDIR=`pwd`
+
+InstallLib()
+{
+	LIBDIR=$1
+	LIBNAME=$2
+
+	echo  -e "\033[1;34m===================================================================\033[0m"
+	echo -e "\033[1;34m Installing $LIBNAME \033[0m"
+	echo  -e "\033[1;34m===================================================================\033[0m"
+	
+	cd $CURDIR
+	
+	cd $LIBDIR
+	echo -e "\033[1;34m Changed directory to `pwd`\033[0m"
+	sleep 0.1
+	
+	./configure --prefix=$CURDIR
+	status=`echo $?`
+	checkStatus $status "***Error in configuring $LIBNAME library ***"
+	echo -e "\033[1;34m--------------Completed configuring $LIBNAME library--------------\033[0m"
+	sleep 0.1
+	
+	make clean
+	make
+	status=`echo $?`
+	checkStatus $status "***Error in building $LIBNAME library***"
+	echo  -e "\033[1;34m--------------Completed building $LIBNAME library------------------\033[0m"
+	sleep 0.1
+
+	make install
+	status=`echo $?`
+	checkStatus $status "***Error in installing $LIBNAME library***"
+
+    make clean
+	echo  -e "\033[1;34m-------------Completed installing $LIBNAME library-----------------\033[0m"
+	sleep 0.1
+}
+
+if [ "$#" -eq 0 ]; then
+    dospice=0
+fi 
+
+if [ "$#" -eq 1 ]; then
+    dospice=$1
+fi    
+     
+
+InstallLib libsrc/cfitsio "CFITSIO"
+
+cd $CURDIR	
+
+echo  -e "\033[1;34m===================================================================\033[0m"
+echo -e "\033[1;34m Installing PIL \033[0m"
+echo  -e "\033[1;34m===================================================================\033[0m"
+
+make -C libsrc/pil clean;make -C libsrc/pil
+make -C libsrc/pil clean;
+echo  -e "\033[1;34m-------------Completed installing PIL library-----------------\033[0m"
+
+
+if [ $dospice -eq 1 ]; then
+
+echo  -e "\033[1;34m===================================================================\033[0m"
+echo -e "\033[1;34m Verifying CSPICE Library \033[0m"
+echo  -e "\033[1;34m===================================================================\033[0m"
+
+cd libsrc/cspice
+
+make all
+
+status=`echo $?`
+checkStatus $status "
+***Error with precompiled CSPICE library files.****  
+
+Install CSPICE library from https://naif.jpl.nasa.gov/naif/toolkit_C.html 
+
+and copy cspice.a and csupport.a to $xsmdas/lib
+
+Re-run this script to ensure that they are working"
+
+make clean
+
+cd $CURDIR
+
+echo  -e "\033[1;34m-------------CSPICE library is working fine-----------------\033[0m"
+
+fi
+
+echo  -e "\033[1;34m------------- Installing LIBS  completed successfully-----------------\033[0m"
+
+if [ $dospice -eq 1 ]; then
+
+echo  -e "\033[1;34m--------------Setting up path in SPICE Meta-Kernel file ----------------\033[0m"
+
+echo "Kernel File is $xsmdas/caldb/xsm_metakernel.ker"
+
+REP="PATH_VALUES = ('$xsmdas/caldb/kernels/')"
+sed -i "s|.*PATH_VALUES.*|$REP|" $xsmdas/caldb/xsm_metakernel.ker
+status=`echo $?`
+checkStatus $status "
+***Error: Unable to set PATH_VALUES in SPICE Meta kernel file ***
+
+In file $xsmdas/caldb/xsm_metakernel.ker, manually CHANGE the line
+
+PATH_VALUES = ('path_to_caldb') 
+
+by replacing path_to_caldb with full path to caldb which is:
+
+$xsmdas/caldb/kernels/
+
+There is no need to re-run this script. Continue with next step 
+of installation.
+"
+
+echo  -e "\033[1;34m---------Setting up path in SPICE Meta-Kernel file successful -----------\033[0m"
+
+fi

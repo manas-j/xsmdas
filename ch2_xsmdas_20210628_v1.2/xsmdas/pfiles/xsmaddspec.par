@@ -1,0 +1,5 @@
+listfile,f,ql,"",,,"Enter input file with spectra filenames"
+specfile,f,ql,"",,,"Enter Output Spectrum file"
+arffile,f,a,"default",,,"Enter output ARF file name"
+addarf,b,a,y,,,"Whether to add respective ARF files?"
+clobber,b,a,y,,,"Overwrite Existing file?"

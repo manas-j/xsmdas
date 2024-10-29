@@ -1,0 +1,60 @@
+
+------------------------------------------------------------------------
+
+			Loading Chandrayaan-2 XSM data in OSPEX
+
+------------------------------------------------------------------------
+
+Pre-requisites:
+
+* IDL Version 8+ on 64-bit platform
+
+* SSW installation with at least SPEX and CHIANTI packages 
+
+* IDLastro package 
+
+To load the XSM spectral data (level-2 time-series PHA file) and 
+response in OSPEX, two IDL routines are provided along with the 
+XSMDAS distribution in this directory. Add this location to 
+IDL PATH or copy the two IDL rouines named ch2xsm_read_data.pro and
+ch2xsm_read_drm.pro to any of the pre-defined IDL PATH locations, 
+so that they are accessible by SolarSoft. It may be noted that these 
+routines are NOT meant to be used independant of OSPEX.
+
+For XSM analysis with OSPEX, start SSW IDL session and invoke OSPEX as:
+
+   o=ospex()
+
+This will open up a window of OSPEX GUI. Then, set the spex file 
+reader to the XSM data read routines as:
+
+o->set, spex_file_reader='ch2xsm_read'
+
+Then, use File->Select Input option in the GUI to load the spectrum files. 
+It is recommended that the standard level-2 PHA file with one second 
+area scaled spectra provided in XSM data archive are used as input files 
+for analysis in OSPEX. In case a user wishes to generate spectrum
+with a higher time bin size to load in OSPEX, use xsmgenspec with the 
+options specified below:
+
+xsmgenspec spectype=time-resolved areascal=yes genarf=no
+
+After loading the file (s), further options in OSPEX can be used to 
+generate light curves for any energy range or spectrum for any duration 
+for further analysis. Multiple spectra files can be imported together 
+if such a requirement arises. No separate background files are provided 
+for use with OSPEX, users shall select appropriate background duration 
+within the data using the functionality in OSPEX, for eg. select pre-flare 
+duration as background for flare spectroscopy.
+It may also be noted that such pre-flare subtraction involves an approximation 
+as the flare and pre-flare spectra are scaled by respective effective area 
+before subtraction. This may result is a slightly inaccurate background  
+subtraction, but will not have major impact on the results as long 
+as fitting is restricted to the energy range where the source 
+dominates over background.
+    
+Refer to OSPEX user manual at 
+https://hesperia.gsfc.nasa.gov/ssw/packages/spex/doc/ospex_explanation.htm 
+for more details on analysis using OSPEX.
+
+--------------------------------------------------------------------------

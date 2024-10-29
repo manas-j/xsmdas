@@ -1,0 +1,134 @@
+****************************************************************************
+                   Chandrayaan-2 Solar X-ray Monitor
+                   XSMDAS: XSM Data Analysis Software
+
+                    Version 1.2 Dated 28 June 2021
+
+                Physical Research Laboratory, Ahmedabad
+                        E-mail:xsmpoc@prl.res.in
+****************************************************************************
+
+This is Data Analysis Software for Solar X-ray Monitor(XSM) instrument 
+on-board Chandrayaan-2 Mission by ISRO. This distribution of XSMDAS includes
+modules for generation of calibrated level-2 data products such as spectrum 
+and light curves from the XSM raw level-1 data sets.   
+
+Pre-requisites
+    OS: 64-bit Linux/Unix (CentOS 7.0+, Ubuntu 14.04+, RHEL 6.5+, Fedora 20+, 
+					SLED 11.0+, OS X 10.13+)
+    Compiler: gcc 4.4+
+	For python tools, python3 and relvant modules
+
+
+Installation Instructions
+-------------------------
+
+1. Unzip the installation package ch2_xsmdas_yyyymmdd_vn.mm.zip to desired directory:
+
+   unzip ch2_xsmdas_yyyymmdd_vn.mm.zip
+   
+   The top level directory is named xsmdas
+
+2. Setting Environment variables: 
+
+   Add following lines to ~/.bashrc
+   
+    export xsmdas= <path to xsmdas directory>/xsmdas
+    export PATH="$xsmdas/bin:$xsmdas/scripts:$PATH"
+    export LD_LIBRARY_PATH="$xsmdas/lib/":$LD_LIBRARY_PATH
+    export PFILES="$PFILES:$xsmdas/pfiles"
+
+   where <path to xsmdas directory> to be replaced with the absolute 
+   path under which xsmdas directory resides. 
+
+   source ~/.bashrc file as:
+
+   . ~/.bashrc
+
+   If the user has installed any other package that uses PIL with PFILES
+   environment defined in ~/.bashrc, make sure that the other declaration 
+   are appending the pfile paths to the environment variable.
+
+   If the user has HEASOFT installation, it is recommended that the command
+   to source the initialization script of HEASOFT, commonly aliased as heainit,
+   if included in ~/.bashrc shall be after the above commands. This will create 
+   a local copy of Parameter files under $HOME/pfiles.  
+
+3. Installation of libraries:
+   
+   cd $xsmdas
+   ./InstallLibs
+
+   This will compile cfitsio and pil libraries from source.
+
+4. Installation of CALDB:
+   
+   Download the caldb zip file provided along with XSMDAS. Unzip the 
+   package ch2_xsm_caldb_yyyymmdd.zip to $xsmdas directory
+
+   unzip ch2_xsm_caldb_yyyymmdd.zip -d $xsmdas  
+   
+   The caldb files will be extracted to $xsmdas/caldb directory.
+    
+5. Compilation:
+
+   Once the libraries are installed compile XSMDAS with
+
+   cd $xsmdas
+   make 
+
+   This will generate executables under $xsmdas/bin and completes the installation.
+
+User manual
+-----------
+
+To view complete user manual    : xsmhelp
+
+To view help for a task         : xsmhelp taskName
+
+List of XSMDAS tasks
+--------------------
+
+* xsmgtigen     : Creates Good Time Intervals based on parameters ranges from a filterfile
+
+* xsmgenspec    : Generates spectrum from Level-1 science data with required parameters
+
+* xsmgenlc      : Generates light curve with required parameters
+
+* xsmaddspec    : Addes multiple spectrum files together
+
+Usage
+-----
+
+To execute a given module interactively, invoke the module in terminal and
+provide the prompted input parameters. Instead of providing the input
+parameters interactively, user can provide them as arguments of the
+for parameterName = parameterValue. For eg.
+
+xsmaddspec listfile=input_speclist.dat specfile=added_spec.pha
+
+Complete list of parameters for each module are listed in the respective
+help pages. Note that each module has a set of required parameters which
+the user will be prompted to provide in interactive mode and a set of
+optional hidden parameters. Hidden parameters are shown in square brackets
+[] in the help files and will assume default values if not set. These
+parameters can be set by the user only as command line arguments.
+
+Loading XSM data in OSPEX/SSW
+-----------------------------
+
+Refer $xsmdas/idl/README_OSPEX_XSM
+
+Additional useful python tools
+------------------------------
+
+Three python scripts are provided under $xsmdas/scripts. 
+
+* xsmmet2utc: Convert XSM Mission Elapse Time(MET) to UTC String
+* xsmutc2met: Convert UTC string to XSM MET 
+* xsmcomputeflux: Compute broadband X-ray flux in the required energy range
+   				  from time-resolved XSM spectra
+
+For help type moduleName -h (eg. xsmmet2utc -h)
+
+****************************************************************************

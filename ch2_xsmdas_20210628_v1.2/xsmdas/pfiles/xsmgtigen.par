@@ -1,0 +1,7 @@
+hkfile,f,ql,"",,,"Enter Input HK parameter file"
+safile,f,ql,"",,,"Enter Input Solar Angle file"
+gtifile,f,ql,"",,,"Enter Output GTI file"
+filterfile,f,q,"${xsmdas}/pfiles/std_filterfile.dat",,,"Enter filter file with selection ranges"
+usergtifile,s,ql,"-",,,"Enter optional usergtifile"
+usesunang,b,a,y,,,"Use Sun Angle file in GTI Selection?"
+clobber,b,a,y,,,"Overwrite Existing file?"

@@ -1,0 +1,34 @@
+#!/usr/bin/env python3
+
+"""
+    This script converts XSM MET (Mission Elapse Time) 
+    defined as number of seconds elapsed since 2017 Jan 01, 00 UTC
+    to UTC string
+
+"""
+
+from datetime import datetime,timedelta
+import argparse,sys
+
+parser = argparse.ArgumentParser(epilog="""
+    xsmmet2utc: Convert XSM MET (Mission Elapse Time) to UTC String
+""")
+parser.add_argument("MET", help="XSM Mission Elapse Time - seconds from 2017 Jan 01, 00 UTC", type=float)
+args = parser.parse_args()
+
+MET=args.MET
+
+dateref=datetime(2017,1,1)
+
+if (MET < 0):
+    print("Invalid MET. Negative values not allowed")
+    sys.exit(1)
+
+reqdate=dateref+timedelta(seconds=MET)
+
+UTC=datetime.strftime(reqdate,"%Y-%m-%d %H:%M:%S.%f")
+
+print("MET: ",MET)
+print("UTC: ",UTC)
+
+

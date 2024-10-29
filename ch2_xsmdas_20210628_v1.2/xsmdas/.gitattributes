@@ -1,0 +1,4 @@
+caldb/kernels export-ignore
+caldb/xsm_metakernel.ker export-ignore
+caldb/notused export-ignore
+caldb/old export-ignore

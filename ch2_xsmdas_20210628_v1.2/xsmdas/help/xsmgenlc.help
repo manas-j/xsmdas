@@ -1,0 +1,74 @@
+--------------------------------------------------------------------------
+                            XSMDAS HELP
+                         Task: xsmgenlc
+--------------------------------------------------------------------------
+
+Purpose: 
+--------
+
+This task generates light curve from XSM level-1 science data for the desired 
+GTI with the required set of parameters. Light curve with minimum time resolution
+of 1 second can be generated for any channel range and light curve upto 100ms
+time resolution can be generated for three pre-defined channel ranges. 
+
+
+
+Parameters:
+-----------
+
+* l1file           : Name of input Level-1 science FITS file
+                 
+* lcfile           : Name of output light curve file
+
+* hkfile           : Name of input HK file
+
+* safile           : Name of input Sun angle file
+
+* gtifile          : Name of input GTI file
+                 
+* lctype           : Type of output light curve - standard or high-res. In case of standard
+                     light curve in any channel range with integer second time resolution 
+                     is available and in case of high-res, the time resolution available 
+                     in mutiples of 100ms for three pre-defined channel ranges.
+
+* tbinsizesec      : Time binsize in seconds for generating standard light curve
+                     Used when lctype=standard
+
+* tbinsizems       : Time binsize in milliseconds (only multiple of 100ms) for generating
+                     high-res lightcurve. Used when lctype=high-res
+
+* enelow           : Lower energy (0-17.5, default 0.5) for generating light curve when 
+                     enesel=yes 
+                 
+* enehigh          : Higher energy (0-17.5, default 15.0) for generating light curve when
+                     enesel=yes
+
+* [areascal]       : Whether to apply area scaling to lightcurve (Y/N). If set to yes, the
+                     lightcurve generated will be corrected for relative area differences
+                     with Sun angle, and output would be as observed by XSM on-axis. 
+                     Default is yes.
+
+* [enesel]         : Whether to generate light curve for input energy range instead of input
+                     PHA range. Default is yes
+                 
+* [chstart]        : Start PHA channel for the output light curve (0-1023) when enesel=no
+                 
+* [chstop]         : Stop PHA channel for the output light curve (0-1023) when enesel=no
+                 
+* [effareaparfile] : Name of input effective area parameter file. Required only in case
+                     of areascal=yes. Default [CALDB] will use area par file from the
+                     calibration database
+
+* [abscoeffile]    : Name of input absorption coefficient file. Required only in case
+                     of areascal=yes. Default [CALDB] will use the file from the 
+                     calibration database
+
+* [gainfile]       : Name of input Gain file. Required only in case of enesel=yes.
+                     Default [CALDB] will use gain file from the calibration database
+
+* [eboundsfile]    : Name of input ebounds file. Required only in case of enesel=yes.
+                     Default [CALDB] will use eboundsfile from the calibration database
+
+* [clobber]        : Whether to overwrite existing output files (Y/N). Default is yes.
+
+--------------------------------------------------------------------------

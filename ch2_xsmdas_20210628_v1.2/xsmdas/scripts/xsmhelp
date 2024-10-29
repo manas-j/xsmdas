@@ -1,0 +1,40 @@
+#!/bin/bash
+
+# xsmhelp
+# Display Help files for XSMDAS
+
+# Mithun N. P. S.
+# 20/10/2018
+
+
+if [ ! -d "$xsmdas/help" ]; then
+    echo 'Help files not installed correctly'
+    exit 1
+fi
+
+if [ $# -eq 0 ]; then
+#    echo "Usage: xsmhelp taskName"
+#    echo "Eg: xsmhelp xsmgenspec"
+#    echo "xsmhelp all to view complete help"
+#    exit 1
+     cat $xsmdas/help/all_level2.help $xsmdas/help/xsmgtigen.help $xsmdas/help/xsmgenspec.help \
+        $xsmdas/help/xsmgenlc.help  $xsmdas/help/xsmaddspec.help | less
+     exit 1
+fi
+
+module=$1
+
+if [ "$module" == "all" ]; then
+     cat $xsmdas/help/all_level2.help $xsmdas/help/xsmgtigen.help $xsmdas/help/xsmgenspec.help \
+        $xsmdas/help/xsmgenlc.help $xsmdas/help/xsmaddspec.help | less
+     exit 1   
+fi
+
+helpfile=$xsmdas/help/$module.help
+
+if [ ! -f "$helpfile" ]; then
+    echo "$module is not a valid XSMDAS task"
+    exit 1
+fi
+
+less $helpfile

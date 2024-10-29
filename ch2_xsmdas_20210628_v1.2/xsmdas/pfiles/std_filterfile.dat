@@ -1,0 +1,9 @@
+HVMonitor           1   1.0   -
+DetTemperature      1   1.8   -
+LV1Monitor          1   3.1   3.4
+LV2Monitor          1   1.4   1.6
+MotorIRPos          2   0   0   2   2
+FrameDiscardFlag    1   0   0
+SunTheta            1   -   38
+SunFovFlag          1   1   1
+SunOccultFlag       1   0   0

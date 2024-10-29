@@ -1,0 +1,31 @@
+ff=gfortran -c
+cc=gcc -c
+ccc=g++ -DNDEBUG  -Wall -Wextra 
+INCLUDE=-I. -I../xsmutils/ -I../../include/  $(INCLUDE1)
+LIB=-L ../../lib/ -lpil -lcfitsio -lm $(LIB1) 
+CP=cp
+
+OBJECTS=$(SOURCES:.cpp=.o)  $(SOURCES2:.c=.o) $(SOURCES3:.f=.o)
+UTILSDIR=../xsmutils
+BINDIR=../../bin
+
+all         : $(EXE)
+		$(CP) $(EXE) $(BINDIR)
+		$(RM) $(EXE)
+		$(RM) *.o $(UTILSDIR)/*.o
+
+$(EXE)      : $(OBJECTS)
+		$(ccc) $(OBJECTS) $(INCLUDE) $(LIB)  -o  $(EXE)
+
+.cpp.o      : 
+		$(ccc) -w -c $< -o $@ $(INCLUDE)
+
+.c.o        : 
+		$(cc) $< -o $@ $(INCLUDE)
+
+.f.o        :
+		$(ff) $< -o $@ $(INCLUDE)
+
+clean:
+	$(RM) $(EXE)
+	$(RM) *.o $(UTILSDIR)/*.o

@@ -1,0 +1,50 @@
+--------------------------------------------------------------------------
+                      Chandrayaan-2 Solar X-ray Monitor
+
+                     XSMDAS: XSM Data Analysis Software
+ 
+                              User Manual
+                                                                  
+--------------------------------------------------------------------------
+
+XSMDAS is the data analysis software package for Solar X-ray Monitor 
+(XSM) instrument on-board orbiter of Chandrayaan-2 mission by ISRO. 
+This User manual describes the usage of tasks which are included in 
+XSMDAS for generation of calibrated level-2 products from raw level-1
+data. See README file for installation instructions.
+
+To view complete user manual        : xsmhelp
+
+To view help for specific module    : xsmhelp moduleName
+
+List of XSMDAS modules
+----------------------
+
+* xsmgtigen     : Creates Good Time Intervals based on parameters ranges 
+                  from a filterfile
+
+* xsmgenspec    : Generates spectrum from Level-1 science data with 
+                  required parameters
+
+* xsmgenlc      : Generates light curve with required parameters
+
+* xsmaddspec    : Addes multiple spectrum files together
+
+Usage
+-----
+
+To execute a given module interactively, invoke the module in terminal and 
+provide the prompted input parameters. Instead of providing the input 
+parameters interactively, user can provide them as arguments of the 
+for parameterName = parameterValue. For eg.
+
+xsmaddspec listfile=input_speclist.dat specfile=added_spec.pha 
+
+Complete list of parameters for each module are listed in the respective 
+help pages. Note that each module has a set of required parameters which
+the user will be prompted to provide in interactive mode and a set of 
+optional hidden parameters. Hidden parameters are shown in square brackets
+[] in the help files and will assume default values if not set. These 
+parameters can be set by the user only as command line arguments.   
+
+--------------------------------------------------------------------------

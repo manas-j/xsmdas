@@ -1,0 +1,134 @@
+--------------------------------------------------------------------------
+                            XSMDAS HELP
+                          Task: xsmgtigen
+--------------------------------------------------------------------------
+
+Purpose: 
+--------
+
+This task finds out intervals of time (GTI) when the HK parameters and Sun 
+angle related parameters are within the ranges specified by a user provided
+filter file 
+
+Parameters:
+-----------
+
+* hkfile      : Name of input HK file
+
+* gtifile     : Name of output GTI file
+
+* safile      : Name of input Sun Angle file
+
+* filterfile  : Name of input filterfile specifying ranges of any of the available 
+                parameters. See below for format of filter file and available list
+                of parameters. With usesunang=no, any Sun angle related parameter 
+                in the filter file will be ignored. Standard filter file is 
+                available at $xsmdas/pfiles/std_filterfile.dat This is  
+                set as the default input and it should be used in case of no
+                specific requirement. If required to use different
+                range of parameters, create another filterfile as per the format below
+                and provide that as input. Do not edit the standard filterfile.
+
+* usergtifile : Name of optional text file with a user defined GTI. File should 
+                contain one time interval per line, providing start and end time. 
+                Time should be in MET which is UTC seconds from 2017 Jan 01 0 UTC.
+                Set to - if no user gti selection is needed. Start and stop times 
+                of observation in terms of MET are given in level-1 science data 
+                header as keywords TSTART and TSTOP.		
+
+* [usesunang] : Whether to use Sun Angle file parameters in selection of GTI(Y/N)
+                Need to provide sun angle file as input if usesunang=yes. Default 
+                is yes.
+
+* [clobber]   : Whether to overwrite existing output files (Y/N). Default 
+                is yes
+
+Filterfile format
+-----------------
+
+Filterfile is a plain text file with one entry per line for each parameter.
+Each line starts with name of the parameter, then number of ranges of this 
+parameter the user wishes to select for GTI followed by minimum and maximum
+for each of the range. Note that, the time durations when a given parameter 
+is within ANY of the specified ranges will be included in GTI of that parameter 
+and the overall GTI will be intersection of Good intervals for each of the 
+specified parameters. 
+
+In case one wishes to keep a minimum value for a parameter and not a maximum, 
+the second entry of the range should be '-'. Similar rule applies for setting 
+maximum threshold for a parameter. In case an entry is made for a parameter 
+in the filterfile, at least one range needs to be specified, this could 
+be '- -' as well, which will result in no selection based on that parameter 
+and result would be identical to case when the parameter is not listed in 
+the filterfile.
+
+See example below:
+
+DetTemperature      1   1.7  2.0
+MotorIRPos          2   0   0   2   2
+HVMonitor           1   1.5   -
+
+The above entries in a filterfile will select time ranges when (DetTemperature 
+is between 1.7 and 2.0) and (MotorIRPos eq 0 or MotorIRPos eq 2) and 
+(HVMonitor gt 1.5)
+
+Recommended filterfile (std_filterfile.dat) parameters:
+
+HVMonitor           1   1.0   -
+DetTemperature      1   1.8   -
+LV1Monitor          1   3.1   3.4
+LV2Monitor          1   1.4   1.6
+MotorIRPos          2   0   0   2   2
+FrameDiscardFlag    1   0   0
+SunTheta            1   -   38
+SunFovFlag          1   1   1
+SunOccultFlag       1   0   0
+
+List of available parameters for filterfile
+-------------------------------------------
+
+The expected range of values of bounded parameters are given in 
+brackets. In case of only discrete values taken by a parameter, 
+they are all listed. It may be noted that these are all possible 
+values of the parameters and not the recommended ranges for 
+selection of GTI for science analysis.
+
+* EventCounter       : Number of event triggers per second   
+* EventDetected      : Number of detected events per second
+* RampCounter        : Ramp reset counter
+* HVMonitor          : High voltage Monitor (0 - 2.5 V)
+* DetTemperature     : SDD Temperature monitor (0 - 2.5 V)
+* TECCurrent         : TEC Current monitor (0 - 2.5 V)
+* LV1Monitor         : +3.3 V monitor (3.2 - 3.3 V)
+* LV2Monitor         : +1.5 V monitor (1.4 - 1.6 V)
+* LLDRefVoltage      : LLD reference voltage (0 - 1300 mV)
+* TECRefVoltage      : TEC reference voltage (0 - 1300 mV)
+* MotorControlMode   : 0-Auto 1-Manual  2-Forcestep
+* MotorOperationMode : 0-IR   1-Counter 2-Step 
+* MotorSetPos        : 0-Open 1-Cal 2-Bewind
+* MotorIRPos         : 0-Open 1-Cal 2-Bewind
+* IRPowerStatus      : 0-On 1-Off
+* FrameDiscardFlag   : 1-Mechanism moving 0-Stationary
+* MotorAutoTime      : Mechanims auto-movement decision time
+* StepModeDir        : Direction 0-clock;1-anticlock
+* WindowLowerThresh  : Event trigger threshold for Be to open movement
+* WindowUpperThresh  : Event trigger threshold for Open to Be movement
+* PileupRejMode      : 0-off; 1-on (default)
+* PileupRejTime      : Pileup rejection dead time (5 or 10 us)
+* Ch1Start           : Start channel for coarse range 1 for 100 ms data 
+* Ch1Stop            : End channel for coarse range 1 for 100 ms data 
+* Ch2Start           : Start channel for coarse range 2 for 100 ms data
+* Ch2Stop            : End channel for coarse range 2 for 100 ms data
+* Ch3Start           : Start channel for coarse range 3 for 100 ms data
+* Ch3Stop            : End channel for coarse range 3 for 100 ms data
+* ULDEvents          : Number of events in last channel (saturation)
+* SunTheta           : Polar angle subtended by Sun wrt XSM
+* SunPhi             : Azimuth angle of Sun wrt XSM
+* SunFovFlag         : 1-Sun within XSM FOV 0-Not in FOV
+* SunOccultFlag      : 1-Sun occulted fro XSM 0-Sun not occulted
+* RamAngle           : Angle between S/C velocity and XSM boresight
+* RA                 : Right Ascension of XSM boresight
+* DEC                : Declination of XSM boresight
+* SunAngRate         : Rate of change of Sun angle 
+
+--------------------------------------------------------------------------

@@ -1,0 +1,105 @@
+--------------------------------------------------------------------------
+                            XSMDAS HELP
+                         Task: xsmgenspec
+--------------------------------------------------------------------------
+
+Purpose: 
+--------
+
+This task generates time-resolved or time-integrated spectrum from XSM 
+level-1 science data for the desired GTI with the required set of parameters.
+Output spectrum file is compatible with standard X-ray analysis softwares 
+XSPEC and ISIS.
+
+Parameters:
+-----------
+
+* l1file           : Name of input Level-1 science FITS file
+                 
+* specfile         : Name of output spectrum file
+
+* hkfile           : Name of input HK file
+
+* safile           : Name of input Sun angle file
+
+* gtifile          : Name of input GTI file
+                 
+* spectype         : Type of output spectrum file. Options are time-integrated or 
+                     time-resolved. In case of time-integrated, integrated spectrum 
+                     for the observation within specified tstart and tstop will be 
+                     generated as type-I PHA file. In case of time-resolved, spectrum 
+                     with time binsize as specified by tbinsize will be generated 
+                     as type-II PHA file
+
+* tstart           : Start time for the output spectrum (should be in Mission Elaspe
+                     Time). Default [0] for tstart and tstop will generate spectrum
+                     for entire observation data filtered with GTI.
+
+* tstop            : Stop time for the output spectrum (should be in Mission Elaspe
+                     Time). Default [0] for tstart and tstop will generate spectrum
+                     for entire observation data filtered with GTI.
+
+* tbinsize         : Time binsize in seconds for generating time-resolved spectrum.
+                     Only integer seconds are accepted.
+
+* [genarf]         : Whether to generate the ARF file corresponding to the spectrum. This
+                     parameter is considered only when chantype=PI and areascal=no. 
+                     Default is yes.  
+
+* [arffile]        : Name of output ARF file corresponding to the spectrum. If set to
+                     'default', arf file will have same base name as the output spectrum
+                     file
+
+* [areascal]       : Whether to apply area scaling to spectrum (Y/N). If set to yes, the
+                     spectrum generated will be corrected for relative area differences
+                     with Sun angle, it would be spectrum as observed by XSM on-axis.
+                     Default is yes. Note that for spectral fitting with XSPEC, it is 
+                     recommended that the spectrum is generated with areascal=no and 
+                     genarf=yes.
+
+* [chantype]       : Output spectrum channel type - PHA or PI. PHA is instrument channel
+                     spectrum and PI (Pulse Invariant) is gain corrected. Default value 
+                     is PI.
+
+* [gaincorfactor]  : Additional gain correction factor to be applied for conversion from PHA
+                     to PI. Default value is 1.0. This gain factor would be multiplied with the
+                     gain value in CALDB file. If you need to increase the gain by 0.5%, set
+                     this parameter to 1.005. To decrease by 0.5%, set to 0.995 and so on.
+                     Be careful with the use of this parameter, if you do not know what you
+                     are doing, do not use this.
+
+* [offsetcorfactor]: Additional offset correction factor to be applied for conversion from PHA
+                     to PI. Default value is 0. This offset in keV will be added to the offset
+                     from the CALDB.
+                 
+* [sourcetype]     : In case of chantype=PI, whether the gain correction should be done 
+                     with source as Sun (illuminating at different positions on the SDD)
+                     or and cal (illuminating at center of detector always). Default is 
+                     Sun.
+                 
+* [addsyserror]    : Whether to add channel-wise systematic errors in the output spectrum
+                     (Y/N). If set to yes, SYS_ERR column will have fractional systematic 
+                     errors for each channel, otherwise it will be set to zero. Note that
+                     this is available only in case of PI spectrum. Default is yes. 
+                 
+* [gainfile]       : Name of input Gain file. Required only in case of chantype=PI.
+                     Default [CALDB] will use gain file from the calibration database
+                 
+* [eboundsfile]    : Name of input ebounds file. Required only in case of chantype=PI.
+                     Default [CALDB] will use eboundsfile from the calibration database
+                 
+* [effareaparfile] : Name of input effective area parameter file. Required only in case 
+                     of genarf=yes or areascal=yes. Default [CALDB] will use area par
+                     file from the calibration database
+                   
+* [abscoeffile]    : Name of input absorption coefficient file. Required only in case
+                     of genarf=yes or areascal=yes. Default [CALDB] will use the file
+                     from the calibration database
+
+* [syserrfile]     : Name of input systematic error file. Required only in case of
+                     chantype=PI. Default [CALDB] will use the file
+                     from the calibration database. 
+                 
+* [clobber]        : Whether to overwrite existing output files (Y/N). Default is yes
+
+--------------------------------------------------------------------------

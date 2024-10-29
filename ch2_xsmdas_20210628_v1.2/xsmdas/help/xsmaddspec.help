@@ -1,0 +1,34 @@
+--------------------------------------------------------------------------
+                            XSMDAS HELP
+                         Task: xsmaddspec
+--------------------------------------------------------------------------
+
+Purpose: 
+--------
+
+This task adds together multiple XSM type-I PHA files to a single spectrum 
+file, much like the ftool addspec. It takes care of proper addition of 
+channel-wise systematic errors and also adds together the respective ARFs 
+to generate a single ARF file to be used with the added spectrum. This 
+tool is useful if one wishes to add spectra from multiple days together.
+
+Parameters:
+-----------
+
+* listfile         : Name of the input file with the list of spectrum files that 
+                     are to be added together. The list file should be a plain 
+                     ASCII file with one PHA file name in each line
+                 
+* specfile         : Name of output added spectrum file
+                 
+* [arffile]        : Name of output added ARF file corresponding to the spectrum. 
+                     If set to default, arf file will have same base name as the 
+                     output spectrum file.     
+                 
+* [addarf]         : Whether to add ARF files corresponding to the input spectra 
+                     to generate an output ARF file. Default is yes.
+                 
+* [clobber]        : Whether to overwrite existing output files (Y/N). Default 
+                     is yes.
+
+--------------------------------------------------------------------------

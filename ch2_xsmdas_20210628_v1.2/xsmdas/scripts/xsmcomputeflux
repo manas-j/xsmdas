@@ -1,0 +1,103 @@
+#!/usr/bin/env python3.6
+"""
+Compute XSM Flux in user defined energy band by integrating the input time-resolved
+spectrum file and write flux data to output text file. 
+It writes out nan for time bins when data is not available.
+
+"""
+
+from astropy.io import fits
+import numpy as np
+import argparse, os
+from datetime import datetime, date, timedelta
+import sys
+
+parser = argparse.ArgumentParser(epilog="""
+""")
+parser.add_argument("spec2file", help="Type-2 (time-resolved) spectrum file to be used for processing", type=str)
+parser.add_argument("outfile", help="Output text file name", type=str)
+parser.add_argument("Elow", help="Lower energy limit for flux", type=float)
+parser.add_argument("Ehigh", help="Higher energy limit for flux", type=float)
+
+
+args = parser.parse_args()
+
+if(os.path.isfile(args.spec2file)):
+	spec2file=args.spec2file
+else:
+	print("Input file does not exist")
+	sys.exit()
+	
+outfile=args.outfile
+
+if (args.Elow >=1.0) & (args.Elow<=15.0):
+	Elow=args.Elow
+else:
+	print("Elow has to be within 1-15 keV")
+	sys.exit()
+
+if (args.Ehigh >=1.0) & (args.Ehigh<=15.0):
+    Ehigh=args.Ehigh
+else:
+	print("Ehigh has to be within 1-15 keV")
+	sys.exit()
+
+if (Ehigh <= Elow):
+	print("Ehigh can't be <= Elow")
+	sys.exit()
+
+
+
+dateref=datetime(2017,1,1)
+
+hdu1 = fits.open(spec2file)
+hdu=fits.BinTableHDU.from_columns(hdu1[1].columns)
+
+data=hdu.data
+
+time = (data['TSTART']+data['TSTOP'])/2.
+tbinsize=(data['TSTOP'][0]-data['TSTART'][0])
+
+exposure=data['EXPOSURE']
+
+ns=len(data)
+fluxlc = np.zeros(ns)
+
+ene=np.arange(0,512)*0.033+0.5+0.033/2.0 # Midpoint energy of PI bins
+
+kev2erg=1.6021e-9
+cgs2si=0.001
+
+startch=int((Elow-0.5)/0.033)
+stopch=int((Ehigh-0.5)/0.033)
+
+effarea=np.loadtxt(os.environ.get('xsmdas')+'/scripts/xsm_onaxis_effective_area.txt')
+
+for i in range(0,ns):
+    spec = data['COUNTS'][i]/data['EXPOSURE'][i]
+    spec_ene = spec*ene/effarea
+    fluxlc[i] = np.sum(spec_ene[startch:stopch])*kev2erg*cgs2si
+
+## Select only bins with atleast half exposure for tbinsize >=10
+if (tbinsize >= 10.0):
+	ind=(exposure  > max(exposure)/2.0)
+	time=time[ind]
+	fluxlc=fluxlc[ind]
+	exposure=exposure[ind]
+
+nbins=int(86400.0/tbinsize)
+
+tday0=int(time[0]/86400.0)*86400.0
+t0=(time[0]-int((time[0]-tday0)/tbinsize)*tbinsize)
+alltime=np.arange(0,nbins)*tbinsize+t0
+allflux=np.empty(nbins)
+allflux[:]=np.nan
+
+allutc=[(dateref+timedelta(seconds=t)).strftime("%Y-%m-%d %H:%M:%S") for t in alltime]
+
+for i,t in enumerate(time):
+    tbin=int((t-tday0)/tbinsize)
+    allflux[tbin]=fluxlc[i]
+
+np.savetxt(outfile,np.c_[allutc,allflux],fmt="%s")
+    
